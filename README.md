@@ -1,8 +1,9 @@
-// members
+# INTRO
 
-- name
-- contact information
-- membership type
-- location
-- address
-- email
+This is a demo REST api being created while learning nestjs.
+
+# Stack
+
+- Nestjs
+- Typeorm
+- Sqlite3
