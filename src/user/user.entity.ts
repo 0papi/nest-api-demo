@@ -1,5 +1,12 @@
 /* eslint-disable prettier/prettier */
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Membership } from 'src/membership/membership.entity';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  JoinColumn,
+  OneToOne,
+} from 'typeorm';
 
 @Entity()
 export class User {
@@ -24,6 +31,7 @@ export class User {
   @Column()
   email: string;
 
-  @Column()
-  membershipType: string;
+  @OneToOne(() => Membership, { nullable: true })
+  //   @JoinColumn()
+  membership: Membership;
 }

@@ -1,24 +1,34 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
-import { CreateUserDto } from './dtos/create-user.dto';
 
 @Injectable()
 export class UserService {
   constructor(@InjectRepository(User) private userRepo: Repository<User>) {}
 
-  create(user) {
-    const newUser = this.userRepo.create({
-      address: user.address,
-      contact: user.contact,
-      email: user.email,
-      location: user.location,
-      membershipType: user.membershipType,
-      name: user.name,
-      password: user.password,
+  async create(user) {
+    // check if user already exists or not
+    const existingUser = await this.userRepo.findOne({
+      where: {
+        email: user.email,
+      },
     });
 
-    return this.userRepo.save(newUser);
+    if (!existingUser) {
+      // note that creating the instance before saving helps to carry out any Before or After hooks
+      const newUser = this.userRepo.create({
+        address: user.address,
+        contact: user.contact,
+        email: user.email,
+        location: user.location,
+        name: user.name,
+        password: user.password,
+      });
+      return this.userRepo.save(newUser);
+    } else {
+      // refactor this to be handled properly
+      throw new ConflictException('User already exists');
+    }
   }
 }
